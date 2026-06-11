@@ -125,13 +125,13 @@ func gorevleriListele() {
 		var durumKontrol string
 		gunselSure := int(math.Round(time.Until(gorevListesi[j].Sure).Hours() / 24))
 		if gorevListesi[j].TamamlandiMi == true {
-			durumKontrol = ""
+			durumKontrol = "✓"
 		} else if gorevListesi[j].TamamlandiMi == false && gunselSure < 0 {
-			durumKontrol = ""
+			durumKontrol = "✕"
 		} else {
-			durumKontrol = ""
+			durumKontrol = "⧗"
 		}
-		fmt.Printf("[%s] %d. %s (Süre: %d Gün)\n", durumKontrol, j+1, gorevListesi[j].Isim, gunselSure)
+		fmt.Printf("[%s] %2d. %s (Süre: %d Gün)\n", durumKontrol, j+1, gorevListesi[j].Isim, gunselSure)
 	}
 }
 func gorevTamamla(gorev int, yol string) {
@@ -150,5 +150,5 @@ func gorevTamamla(gorev int, yol string) {
 		fmt.Println("Liste dönüştürülemedi")
 		return
 	}
-	os.WriteFile(filepath.Join(yol, "/.todo.json"), tamamlananListe, 0644)
+	os.WriteFile(filepath.Join(yol, ".todo.json"), tamamlananListe, 0644)
 }
