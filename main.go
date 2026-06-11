@@ -11,8 +11,9 @@ import (
 )
 
 type Gorev struct {
-	Isim string
-	Sure time.Time
+	Isim         string
+	Sure         time.Time
+	TamamlandiMi bool
 }
 
 var gorevListesi []Gorev
@@ -48,9 +49,9 @@ func main() {
 				fmt.Println("Eksik ya da hatalı giriş yaptınız!")
 				return
 			}
-		case "list":
+		case "list", "ls", "l":
 			gorevleriListele()
-		case "remove":
+		case "remove", "rm", "r":
 			if len(os.Args) == 3 {
 				silinecekNumara := os.Args[2]
 				silinecekIndex, err := strconv.Atoi(silinecekNumara)
@@ -62,6 +63,16 @@ func main() {
 			} else {
 				fmt.Println("Eksik ya da hatalı giriş yaptınız!")
 				return
+			}
+		case "done", "check":
+			if len(os.Args) == 3 {
+				tamamlananGorev := os.Args[2]
+				tamamlananIndex, err := strconv.Atoi(tamamlananGorev)
+				if err != nil {
+					fmt.Println("Geçersiz numara")
+					return
+				}
+				gorevTamamla(tamamlananIndex)
 			}
 		}
 	}
@@ -112,6 +123,6 @@ func gorevleriListele() {
 	}
 	for j := range gorevListesi {
 		gunselSure := int(math.Round(time.Until(gorevListesi[j].Sure).Hours() / 24))
-		fmt.Printf("%d. %s (Süre: %d Gün)\n", j+1, gorevListesi[j].Isim, gunselSure)
+		fmt.Printf("[] %d. %s (Süre: %d Gün)\n", j+1, gorevListesi[j].Isim, gunselSure)
 	}
 }
