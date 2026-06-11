@@ -97,12 +97,7 @@ func gorevEkle(gorevAdi string, gorevSuresi string, yol string) {
 	}
 	gorevListesi = append(gorevListesi, eklenenGorev)
 	fmt.Println("Görev başarıyla eklendi!")
-	donusturulenListe, err := json.Marshal(gorevListesi)
-	if err != nil {
-		fmt.Println("Liste dönüştürülemedi")
-		return
-	}
-	os.WriteFile(filepath.Join(yol, ".todo.json"), donusturulenListe, 0644)
+	dosyayaKaydet(yol)
 }
 func gorevSil(silinecekGorev int, yol string) {
 	if len(gorevListesi) == 0 {
@@ -116,12 +111,7 @@ func gorevSil(silinecekGorev int, yol string) {
 	}
 	gorevListesi = append(gorevListesi[:index], gorevListesi[index+1:]...)
 	fmt.Println("Görev silindi!")
-	donusturulenListe, err := json.Marshal(gorevListesi)
-	if err != nil {
-		fmt.Println("Liste dönüştürülemedi")
-		return
-	}
-	os.WriteFile(filepath.Join(yol, ".todo.json"), donusturulenListe, 0644)
+	dosyayaKaydet(yol)
 }
 func gorevleriListele(all bool) {
 	if len(gorevListesi) == 0 {
@@ -154,10 +144,13 @@ func gorevTamamla(gorev int, yol string) {
 		return
 	}
 	gorevListesi[index].TamamlandiMi = true
-	tamamlananListe, err := json.Marshal(gorevListesi)
+	dosyayaKaydet(yol)
+}
+func dosyayaKaydet(yol string) {
+	kaydedilecekListe, err := json.Marshal(gorevListesi)
 	if err != nil {
 		fmt.Println("Liste dönüştürülemedi")
 		return
 	}
-	os.WriteFile(filepath.Join(yol, ".todo.json"), tamamlananListe, 0644)
+	os.WriteFile(filepath.Join(yol, ".todo.json"), kaydedilecekListe, 0644)
 }
