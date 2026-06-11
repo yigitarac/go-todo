@@ -72,7 +72,7 @@ func main() {
 					fmt.Println("Geçersiz numara")
 					return
 				}
-				gorevTamamla(tamamlananIndex)
+				gorevTamamla(tamamlananIndex, path)
 			}
 		}
 	}
@@ -122,7 +122,33 @@ func gorevleriListele() {
 		fmt.Println("HENÜZ BİR GÖREV EKLENMEDİ!")
 	}
 	for j := range gorevListesi {
+		var durumKontrol string
 		gunselSure := int(math.Round(time.Until(gorevListesi[j].Sure).Hours() / 24))
-		fmt.Printf("[] %d. %s (Süre: %d Gün)\n", j+1, gorevListesi[j].Isim, gunselSure)
+		if gorevListesi[j].TamamlandiMi == true {
+			durumKontrol = ""
+		} else if gorevListesi[j].TamamlandiMi == false && gunselSure < 0 {
+			durumKontrol = ""
+		} else {
+			durumKontrol = ""
+		}
+		fmt.Printf("[%s] %d. %s (Süre: %d Gün)\n", durumKontrol, j+1, gorevListesi[j].Isim, gunselSure)
 	}
+}
+func gorevTamamla(gorev int, yol string) {
+	if len(gorevListesi) == 0 {
+		fmt.Println("Tamamlanacak görev yok!")
+		return
+	}
+	index := gorev - 1
+	if gorev > len(gorevListesi) || gorev <= 0 {
+		fmt.Println("Geçersiz numara")
+		return
+	}
+	gorevListesi[index].TamamlandiMi = true
+	tamamlananListe, err := json.Marshal(gorevListesi)
+	if err != nil {
+		fmt.Println("Liste dönüştürülemedi")
+		return
+	}
+	os.WriteFile(filepath.Join(yol, "/.todo.json"), tamamlananListe, 0644)
 }
