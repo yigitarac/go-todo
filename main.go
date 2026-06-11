@@ -35,8 +35,10 @@ func main() {
 	}
 	if len(os.Args) == 1 {
 		fmt.Println("todo add “Görev Adı“ süre(gün)")
-		fmt.Println("todo list")
-		fmt.Println("todo remove görev no")
+		fmt.Println("todo list/ls/l (bekleyen görevleri görmek için)")
+		fmt.Println("todo list/ls/l all (bütün görevleri görmek için)")
+		fmt.Println("todo remove/rm/r görev no")
+		fmt.Println("todo done/check görev no")
 	} else if len(os.Args) >= 2 {
 		islem := os.Args[1]
 		switch islem {
@@ -50,7 +52,11 @@ func main() {
 				return
 			}
 		case "list", "ls", "l":
-			gorevleriListele()
+			if len(os.Args) == 2 {
+				gorevleriListele(false)
+			} else if len(os.Args) == 3 && os.Args[2] == "all" {
+				gorevleriListele(true)
+			}
 		case "remove", "rm", "r":
 			if len(os.Args) == 3 {
 				silinecekNumara := os.Args[2]
@@ -117,7 +123,7 @@ func gorevSil(silinecekGorev int, yol string) {
 	}
 	os.WriteFile(filepath.Join(yol, ".todo.json"), donusturulenListe, 0644)
 }
-func gorevleriListele() {
+func gorevleriListele(all bool) {
 	if len(gorevListesi) == 0 {
 		fmt.Println("HENÜZ BİR GÖREV EKLENMEDİ!")
 	}
@@ -130,6 +136,9 @@ func gorevleriListele() {
 			durumKontrol = "✕"
 		} else {
 			durumKontrol = "⧗"
+		}
+		if (gorevListesi[j].TamamlandiMi == true || (gorevListesi[j].TamamlandiMi == false) && (gunselSure < 0)) && all == false {
+			continue
 		}
 		fmt.Printf("[%s] %2d. %s (Süre: %d Gün)\n", durumKontrol, j+1, gorevListesi[j].Isim, gunselSure)
 	}
